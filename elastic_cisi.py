@@ -76,7 +76,7 @@ def search_cisi(query, top_n=5):
         "size": top_n
     })
     
-    results = [{"doc_id": hit["_source"]["doc_id"], "score": hit["_score"]} for hit in response["hits"]["hits"]]
+    results = [{"doc_id": hit["_source"]["doc_id"], "score": hit["_score"], "text": hit["_source"]["text"]} for hit in response["hits"]["hits"]]
     return results
 
 # Flask API Endpoint for Searching CISI Data
