@@ -3,3 +3,4 @@ nltk
 elasticsearch
 requests
 pandas
+flask-cors
