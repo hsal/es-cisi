@@ -127,8 +127,8 @@ def search_cisi(query, top_n=5):
                 "text": {},
                 "author": {}
             },
-            "pre_tags": ["<mark>"],
-            "post_tags": ["</mark>"]
+            "pre_tags": ["<tag>"],
+            "post_tags": ["</tag>"]
         },
         "size": top_n
     })
