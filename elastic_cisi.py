@@ -8,6 +8,7 @@ from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 from elasticsearch import Elasticsearch
 from elasticsearch.helpers import bulk
+from dotenv import load_dotenv
 
 # Ensure necessary NLTK resources are available
 nltk.download('stopwords')
@@ -19,9 +20,11 @@ app = Flask(__name__)
 # Elastic Cloud Configuration
 INDEX_NAME = "cisi_data"
 
+load_dotenv()
+
 # Connect to Elastic Cloud
 es = Elasticsearch(
-    os.getenv("ES_URL"),
+    hosts=[os.getenv("ES_URL")],
     api_key=os.getenv("ES_API_KEY")
 )
 
@@ -137,9 +140,14 @@ def search_cisi(query, top_n=5):
         results.append({
             "doc_id": source["doc_id"],
             "score": hit["_score"],
-            "title": highlights.get("title", [source["title"]])[0],
-            "author": highlights.get("author", [source["author"]])[0],
-            "text": highlights.get("text", [source["text"]])[0]
+            "title": source["title"],
+            "author": source["author"],
+            "text": source["text"],
+            "highlights": {
+                "title": highlights.get("title", []),
+                "author": highlights.get("author", []),
+                "text": highlights.get("text", [])
+            }
         })
 
     return results
