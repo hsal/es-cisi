@@ -8,6 +8,7 @@ from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 from elasticsearch import Elasticsearch
 from elasticsearch.helpers import bulk
+from flask_cors import CORS
 #from dotenv import load_dotenv
 
 # Ensure necessary NLTK resources are available
@@ -16,6 +17,8 @@ nltk.download('punkt')
 
 # Flask App Setup
 app = Flask(__name__)
+
+CORS(app)
 
 # Elastic Cloud Configuration
 INDEX_NAME = "cisi_data"
@@ -164,4 +167,4 @@ def search_api():
 
 # Run Flask App
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=8080, debug=True)
