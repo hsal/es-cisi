@@ -8,7 +8,7 @@ from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 from elasticsearch import Elasticsearch
 from elasticsearch.helpers import bulk
-from dotenv import load_dotenv
+#from dotenv import load_dotenv
 
 # Ensure necessary NLTK resources are available
 nltk.download('stopwords')
@@ -20,12 +20,12 @@ app = Flask(__name__)
 # Elastic Cloud Configuration
 INDEX_NAME = "cisi_data"
 
-load_dotenv()
+#load_dotenv()
 
 # Connect to Elastic Cloud
 es = Elasticsearch(
-    hosts=[os.getenv("ES_URL")],
-    api_key=os.getenv("ES_API_KEY")
+    hosts=["https://my-elasticsearch-project-ec56ca.es.us-east-1.aws.elastic.cloud:443"],
+    api_key=os.getenv("ZHVhVVdKVUJmWEg5ajJ6UC1oYzk6M2pGdk5zVVVtWmxoMjAwdHlHZzc2dw==")
 )
 
 # Load the dataset (Modify the path to your dataset location)
