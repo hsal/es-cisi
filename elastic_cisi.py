@@ -130,8 +130,8 @@ def search_cisi(query, top_n=5):
                 "text": {},
                 "author": {}
             },
-            "pre_tags": ["<tag>"],
-            "post_tags": ["</tag>"]
+            "pre_tags": ["<mark>"],
+            "post_tags": ["</mark>"]
         },
         "size": top_n
     })
