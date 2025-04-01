@@ -11,8 +11,7 @@ from elasticsearch.helpers import bulk
 from nltk.tokenize import word_tokenize
 import string
 
-nltk.download('punkt')
-nltk.download('stopwords')
+nltk.data.path.append("./nltk_data")
 
 stop_words = set(stopwords.words('english'))
 
