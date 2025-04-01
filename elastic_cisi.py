@@ -155,16 +155,52 @@ def search_cisi(query, top_n=5):
 
     return results
 
+def search_cisi_exact(query, top_n=5):
+    response = es.search(index=INDEX_NAME, body={
+        "size": top_n,
+        "query": {
+            "match": {
+                "text": {
+                    "query": query,
+                    "operator": "and"  # All keywords must appear
+                }
+            }
+        }
+    })
+
+    results = []
+    for hit in response["hits"]["hits"]:
+        source = hit["_source"]
+        results.append({
+            "doc_id": source["doc_id"],
+            "score": hit["_score"],
+            "title": source["title"],
+            "author": source["author"],
+            "text": source["text"]
+        })
+
+    return results
+
 # Flask API Endpoint for Searching CISI Data
 @app.route("/search", methods=["GET"])
 def search_api():
     query = request.args.get("q", "")
-    top_n = request.args.get("size", default=5, type=int)  # ← NEW LINE
+    top_n = request.args.get("size", default=5, type=int)
 
     if not query:
         return jsonify({"error": "Query parameter 'q' is required."}), 400
 
-    results = search_cisi(query, top_n=top_n)  # ← PASS top_n
+    results = search_cisi(query, top_n=top_n) 
+    return jsonify({"query": query, "results": results})
+
+@app.route("/search_exact", methods=["GET"])
+def search_exact_api():
+    query = request.args.get("q", "")
+    top_n = request.args.get("size", default=5, type=int)
+    if not query:
+        return jsonify({"error": "Query parameter 'q' is required."}), 400
+
+    results = search_cisi_exact(query, top_n=top_n)
     return jsonify({"query": query, "results": results})
     
 # Run Flask App
