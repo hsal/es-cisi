@@ -159,12 +159,14 @@ def search_cisi(query, top_n=5):
 @app.route("/search", methods=["GET"])
 def search_api():
     query = request.args.get("q", "")
+    top_n = request.args.get("size", default=5, type=int)  # ← NEW LINE
+
     if not query:
         return jsonify({"error": "Query parameter 'q' is required."}), 400
-    
-    results = search_cisi(query)
-    return jsonify({"query": query, "results": results})
 
+    results = search_cisi(query, top_n=top_n)  # ← PASS top_n
+    return jsonify({"query": query, "results": results})
+    
 # Run Flask App
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080, debug=True)
