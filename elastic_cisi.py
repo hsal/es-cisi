@@ -1,35 +1,40 @@
 import os
-import pandas as pd
-import numpy as np
 import re
 import nltk
+import pandas as pd
+import numpy as np
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from nltk.corpus import stopwords
-from nltk.stem import PorterStemmer
 from elasticsearch import Elasticsearch
 from elasticsearch.helpers import bulk
-from flask_cors import CORS
-#from dotenv import load_dotenv
+from nltk.tokenize import word_tokenize
+import string
 
-# Ensure necessary NLTK resources are available
-nltk.download('stopwords')
 nltk.download('punkt')
+nltk.download('stopwords')
+
+stop_words = set(stopwords.words('english'))
 
 # Flask App Setup
 app = Flask(__name__)
-
 CORS(app)
 
 # Elastic Cloud Configuration
 INDEX_NAME = "cisi_data"
-
-#load_dotenv()
 
 # Connect to Elastic Cloud
 es = Elasticsearch(
     hosts=["https://my-elasticsearch-project-ec56ca.es.us-east-1.aws.elastic.cloud:443"],
     api_key="ZHVhVVdKVUJmWEg5ajJ6UC1oYzk6M2pGdk5zVVVtWmxoMjAwdHlHZzc2dw=="
 )
+
+def preprocess_query(text):
+    tokens = word_tokenize(text.lower())
+    tokens = [t for t in tokens if t not in stop_words and t not in string.punctuation]
+    return ' '.join(tokens)
+
+
 
 # Load the dataset (Modify the path to your dataset location)
 DOCUMENTS_FILE = "CISI.ALL"
@@ -155,18 +160,19 @@ def search_cisi(query, top_n=5):
 
     return results
 
-def search_cisi_exact(query, top_n=5):
+def evaluate_cisi(query, top_n=5):
+    query = preprocess_query(query)
     response = es.search(index=INDEX_NAME, body={
-        "size": top_n,
         "query": {
-            "match": {
-                "text": {
-                    "query": query,
-                    "operator": "and"  # All keywords must appear
-                }
+            "multi_match": {
+                "query": query,
+                "fields": ["title^5", "text^2", "author"],
+                "type": "best_fields",
+                "fuzziness": "AUTO"
             }
-        }
-    })
+        },
+        "size": top_n
+    })  
 
     results = []
     for hit in response["hits"]["hits"]:
@@ -193,16 +199,16 @@ def search_api():
     results = search_cisi(query, top_n=top_n) 
     return jsonify({"query": query, "results": results})
 
-@app.route("/search_exact", methods=["GET"])
-def search_exact_api():
+@app.route("/evaluate", methods=["GET"])
+def search_simple_api():
     query = request.args.get("q", "")
     top_n = request.args.get("size", default=5, type=int)
     if not query:
         return jsonify({"error": "Query parameter 'q' is required."}), 400
 
-    results = search_cisi_exact(query, top_n=top_n)
+    results = evaluate_cisi(query, top_n=top_n)
     return jsonify({"query": query, "results": results})
-    
-# Run Flask App
+
+# === Run Flask App ===
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080, debug=True)
