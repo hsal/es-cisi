@@ -209,7 +209,7 @@ def search_simple_api():
     return jsonify({"query": query, "results": results})
     
 @app.route("/autocomplete", methods=["GET"])
-def autocomplete_api():
+def autocomplete_smart():
     prefix = request.args.get("q", "")
     top_n = request.args.get("size", default=5, type=int)
 
@@ -224,16 +224,29 @@ def autocomplete_api():
                     "query": prefix
                 }
             }
+        },
+        "highlight": {
+            "fields": {
+                "text": {
+                    "fragment_size": 100,
+                    "number_of_fragments": 1
+                }
+            },
+            "pre_tags": ["<mark>"],
+            "post_tags": ["</mark>"]
         }
     })
 
     suggestions = []
     for hit in response["hits"]["hits"]:
+        snippet = hit.get("highlight", {}).get("text", [""])[0]
         suggestions.append({
-            "text": hit["_source"]["text"]
+            "doc_id": hit["_source"]["doc_id"],
+            "title": hit["_source"]["title"],
+            "snippet": snippet
         })
 
-    return jsonify({"query": prefix, "results": suggestions})
+    return jsonify({"query": prefix, "suggestions": suggestions})
     
 # === Run Flask App ===
 if __name__ == "__main__":
