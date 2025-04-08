@@ -207,7 +207,36 @@ def search_simple_api():
 
     results = evaluate_cisi(query, top_n=top_n)
     return jsonify({"query": query, "results": results})
+    
+@app.route("/autocomplete", methods=["GET"])
+def autocomplete_api():
+    prefix = request.args.get("q", "")
+    top_n = request.args.get("size", default=5, type=int)
 
+    if not prefix:
+        return jsonify({"error": "Query parameter 'q' is required."}), 400
+
+    response = es.search(index=INDEX_NAME, body={
+        "size": top_n,
+        "query": {
+            "match_phrase_prefix": {
+                "title": {
+                    "query": prefix
+                }
+            }
+        }
+    })
+
+    suggestions = []
+    for hit in response["hits"]["hits"]:
+        suggestions.append({
+            "doc_id": hit["_source"]["doc_id"],
+            "title": hit["_source"]["title"],
+            "score": hit["_score"]
+        })
+
+    return jsonify({"query": prefix, "results": suggestions})
+    
 # === Run Flask App ===
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080, debug=True)
