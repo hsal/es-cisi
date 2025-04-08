@@ -220,7 +220,7 @@ def autocomplete_api():
         "size": top_n,
         "query": {
             "match_phrase_prefix": {
-                "title": {
+                "text": {
                     "query": prefix
                 }
             }
@@ -230,9 +230,7 @@ def autocomplete_api():
     suggestions = []
     for hit in response["hits"]["hits"]:
         suggestions.append({
-            "doc_id": hit["_source"]["doc_id"],
-            "title": hit["_source"]["title"],
-            "score": hit["_score"]
+            "text": hit["_source"]["text"]
         })
 
     return jsonify({"query": prefix, "results": suggestions})
