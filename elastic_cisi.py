@@ -209,7 +209,7 @@ def search_simple_api():
     return jsonify({"query": query, "results": results})
     
 @app.route("/autocomplete", methods=["GET"])
-def autocomplete():
+def autocomplete_combined_text_title():
     prefix = request.args.get("q", "")
     top_n = request.args.get("size", default=5, type=int)
 
@@ -219,16 +219,21 @@ def autocomplete():
     response = es.search(index=INDEX_NAME, body={
         "size": top_n,
         "query": {
-            "match_phrase_prefix": {
-                "text": {
-                    "query": prefix
-                }
+            "bool": {
+                "should": [
+                    {"match_phrase_prefix": {"title": {"query": prefix}}},
+                    {"match_phrase_prefix": {"text": {"query": prefix}}}
+                ]
             }
         },
         "highlight": {
             "fields": {
+                "title": {
+                    "fragment_size": 50,
+                    "number_of_fragments": 1
+                },
                 "text": {
-                    "fragment_size": 100,
+                    "fragment_size": 80,
                     "number_of_fragments": 1
                 }
             },
@@ -239,14 +244,19 @@ def autocomplete():
 
     suggestions = []
     for hit in response["hits"]["hits"]:
-        snippet = hit.get("highlight", {}).get("text", [""])[0]
+        highlight = hit.get("highlight", {})
+        snippet = highlight.get("title", highlight.get("text", [""]))[0]
+
         suggestions.append({
             "doc_id": hit["_source"]["doc_id"],
             "title": hit["_source"]["title"],
             "snippet": snippet
         })
 
-    return jsonify({"query": prefix, "suggestions": suggestions})
+    return jsonify({
+        "query": prefix,
+        "suggestions": suggestions
+    })
     
 # === Run Flask App ===
 if __name__ == "__main__":
