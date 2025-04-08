@@ -209,7 +209,7 @@ def search_simple_api():
     return jsonify({"query": query, "results": results})
     
 @app.route("/autocomplete", methods=["GET"])
-def autocomplete_smart():
+def autocomplete():
     prefix = request.args.get("q", "")
     top_n = request.args.get("size", default=5, type=int)
 
