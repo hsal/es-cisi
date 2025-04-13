@@ -1,59 +1,38 @@
-# 📚 CISI Search API with Flask & Elasticsearch
+# 🔍 CISI Search Interface – Next.js + Flask + Elasticsearch
 
-This project provides a RESTful API for searching and retrieving documents from the **CISI dataset**, using **Elasticsearch** for indexing and **Flask** as the web framework. It includes search, autocomplete, and document retrieval functionalities, with a modular and production-ready architecture.
+This project is a web-based search interface built with **Next.js** that allows users to search and retrieve documents from the **CISI dataset** via a **Flask API backed by Elasticsearch**.
 
----
+## 📚 About
+
+The application consists of:
+
+- **Frontend:** Built with Next.js (React), featuring a responsive search bar and result display.
+- **Backend:** A Flask REST API that connects to Elasticsearch and indexes the CISI dataset.
+- **Dataset:** The [CISI (Information Retrieval) dataset](https://ir.dcs.gla.ac.uk/resources/test_collections/cisi/) commonly used in information retrieval research.
+
+## 🌐 Live Demo
+
+> 🟢 [https://your-deployed-url.com](https://your-deployed-url.com)  
+*(Replace with your deployed frontend URL)*
 
 ## 🚀 Features
 
-- 🔍 **Search**: Multi-field text search across `title`, `text`, and `author` with fuzzy matching and highlight support.
-- ✨ **Autocomplete**: Phrase prefix matching to simulate autocomplete behavior.
-- 📄 **Document Retrieval**: Fetch document details by document ID.
-- 🧠 **NLP Preprocessing**: Tokenization, lowercasing, stopword removal, punctuation filtering using NLTK.
+- Full-text search across the CISI dataset
+- Instant search with autocomplete
+- Clean, responsive UI using React
+- Fast query results using Elasticsearch
+- Environment-configurable API base URL
 
----
+## 🧱 Tech Stack
 
-## 🛠️ Getting Started
+- **Frontend:** Next.js, React
+- **Backend:** Flask, Elasticsearch
+- **Data:** CISI Dataset
+- **Deployment:** Vercel (frontend), Render (backend) *(or customize based on your stack)*
 
-### 1. Clone the Repository
+## 🔧 Environment Variables
 
-```bash
-git clone https://github.com/hsal/es-cisi.git
-cd es-cisi
-```
+Set the API endpoint for the Flask server in `.env.local`:
 
-### 2. Install Dependencies
-```bash
-pip install -r requirements.txt
-```
-
-### 3. Environment Variables
-```bash
-ES_HOST=<your-elasticsearch-host>
-ES_API_KEY=<your-elasticsearch-api-key>
-```
-
-
-###  ⚙️ Running the App
-```bash
-python run.py
-```
-
----
-
-## 📡 API Endpoints
-
-### 🔍 Search
-```bash
-GET /api/search/?q=<query>&size=<optional: number of results>
-```
-
-### 🔤 Autocomplete
-```bash
-GET /api/search/autocomplete?q=<query>&size=<optional: number of suggestions>
-```
-
-### 📄 Document by ID
-```bash
-GET /api/document/<id>
-```
+```env
+NEXT_PUBLIC_API_BASE_URL=https://es-cisi.onrender.com
