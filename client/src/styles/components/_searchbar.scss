@@ -1,0 +1,28 @@
+.sui-search-box__submit {
+  display: none;
+}
+
+.custom-search-input {
+  width: 800px;
+  max-width: 100%;
+}
+
+.sui-search-box__autocomplete-container {
+  width: 800px;
+  max-width: 100%;
+
+  .sui-search-box__autocomplete-list {
+    background-color: black;
+  }
+  .sui-search-box__autocomplete-list-item {
+    background-color: black;
+  }
+  .sui-search-box__autocomplete-list-item--active {
+    background-color: #cffff1;
+    color: #cffff1;
+  }
+  .sui-search-box__autocomplete-list-item--active:hover {
+    background-color: #cffff1;
+    color: #cffff1;
+  }
+}
