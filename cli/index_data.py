@@ -1,32 +1,12 @@
 import re
-from nltk.corpus import stopwords
-from elasticsearch import Elasticsearch
 from elasticsearch.helpers import bulk
-from nltk.tokenize import word_tokenize
-import string
-
-stop_words = set(stopwords.words("english"))
-
-# Elastic Cloud Configuration
-INDEX_NAME = "cisi_data_p"
-
-# Connect to Elastic Cloud
-es = Elasticsearch(
-    hosts=[
-        "https://my-elasticsearch-project-ec56ca.es.us-east-1.aws.elastic.cloud:443"
-    ],
-    api_key="ZHVhVVdKVUJmWEg5ajJ6UC1oYzk6M2pGdk5zVVVtWmxoMjAwdHlHZzc2dw==",
-)
-
-
-def preprocess(text):
-    tokens = word_tokenize(text.lower())
-    tokens = [t for t in tokens if t not in stop_words and t not in string.punctuation]
-    return " ".join(tokens)
+from app.extensions.es import es
+from app.config import Config
+from app.utils.preprocess import preprocess_query
 
 
 # Load the dataset (Modify the path to your dataset location)
-DOCUMENTS_FILE = "CISI.ALL"
+DOCUMENTS_FILE = "data/CISI.ALL"
 
 
 def read_cisi_file(filename):
@@ -53,7 +33,7 @@ def read_cisi_file(filename):
         data[doc_id] = {
             "doc_id": doc_id,
             "text": text,
-            "preprocessed_text": preprocess(text),
+            "preprocessed_text": preprocess_query(text),
             "title": title,
             "author": author,
         }
@@ -74,7 +54,7 @@ def index_documents_to_elasticsearch(documents):
     """Indexes CISI documents into Elasticsearch using bulk API."""
     actions = [
         {
-            "_index": INDEX_NAME,
+            "_index": Config.INDEX_NAME,
             "_id": doc["doc_id"],
             "_source": {
                 "doc_id": doc["doc_id"],

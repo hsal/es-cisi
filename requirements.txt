@@ -4,3 +4,4 @@ elasticsearch
 requests
 pandas
 flask-cors
+python-dotenv
