@@ -4,7 +4,7 @@ from app.services.search import search_cisi, autocomplete
 search_bp = Blueprint("search", __name__)
 
 
-@search_bp.route("/", methods=["GET"])
+@search_bp.route("", methods=["GET"])
 def search_api():
     query = request.args.get("q", "")
     top_n = request.args.get("size", default=5, type=int)
