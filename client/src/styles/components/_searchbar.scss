@@ -5,6 +5,11 @@
 .custom-search-input {
   width: 800px;
   max-width: 100%;
+
+  @media screen and (max-width: 800px) {
+    width: 400px;
+    max-width: 100%;
+  }
 }
 
 .sui-search-box__autocomplete-container {
@@ -24,5 +29,10 @@
   .sui-search-box__autocomplete-list-item--active:hover {
     background-color: #cffff1;
     color: #cffff1;
+  }
+
+  @media screen and (max-width: 800px) {
+    width: 400px;
+    max-width: 100%;
   }
 }

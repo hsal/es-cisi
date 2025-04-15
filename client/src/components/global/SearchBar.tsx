@@ -74,8 +74,8 @@ const SearchBar = () => {
   };
 
   return (
-    <div className='flex flex-col justify-center items-center w-full mt-36'>
-      <h1 className='text-6xl font-bold mb-4'>
+    <div className='flex flex-col justify-center items-center w-full mt-36 px-4 sm:px-8'>
+      <h1 className='text-4xl sm:text-6xl font-bold mb-4'>
         <span className='text-blue-600'>G</span>
         <span className='text-red-600'>h</span>
         <span className='text-yellow-400'>a</span>
@@ -90,7 +90,7 @@ const SearchBar = () => {
         <SearchBox
           inputProps={{
             className:
-              'border border-gray-300 rounded-full p-4 pl-8 shadow-sm text-lg placeholder-gray-600 custom-search-input',
+              'border border-gray-300 rounded-full p-3 sm:p-4 pl-6 sm:pl-8 shadow-sm text-base sm:text-lg placeholder-gray-600 custom-search-input',
             placeholder: 'Search Ghar or type a query',
             value: searchQuery,
             onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
